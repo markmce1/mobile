@@ -3,6 +3,7 @@ package c16315146.mydit.ie.myandroidproject;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Display;
@@ -34,6 +35,7 @@ public class listdetails extends AppCompatActivity {
         switch(index){
             case 0: return R.drawable.artofthedeal;
             case 1: return R.drawable.ditlogo;
+            case 2: return R.drawable.ditlogo2;
             default: return -1;
         }
     }
@@ -54,6 +56,21 @@ public class listdetails extends AppCompatActivity {
         options.inJustDecodeBounds = false;
         Bitmap scaledimage = BitmapFactory.decodeResource(getResources(), pic, options);
         img.setImageBitmap(scaledimage);
+    }
+
+    String url1 = ("https://www.youtube.com/results?search_query=book+review+");
+    String url2 = ("https://www.amazon.co.uk/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=");
+    public void open(View view) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url2));
+        startActivity(browserIntent);
+
+
+    }
+
+    public void openYoutube(View view) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url1));
+        startActivity(browserIntent);
+
     }
 
 

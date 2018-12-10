@@ -1,47 +1,39 @@
 package c16315146.mydit.ie.myandroidproject;
 
 import android.content.Intent;
-import android.content.res.Resources;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import static c16315146.mydit.ie.myandroidproject.MyDBhandler.TABLE_BOOKS;
+import org.w3c.dom.Text;
+
 
 public class MainActivity extends AppCompatActivity {
 
-
+    Button addButton;
     Button button;
-    Button usefulLinks;
     Button button2;
     EditText BookText;
-    TextView authorView;
-    TextView categoryView;
-    MyDBhandler dbhandler;
-    String[] bookNames;
-    String[] bookAuthor;
-    String[] bookCategory;
-
-
+    EditText authorView;
+    EditText categoryView;
+    MyDBhandler myDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         BookText = findViewById(R.id.BookText);
-        authorView = findViewById(R.id.authorView);
-        categoryView = findViewById(R.id.categoryView);
-        dbhandler = new MyDBhandler(this, null, null, 1);
+        myDB = new MyDBhandler(this);
+        addButton = findViewById(R.id.addButton);
 
 
 
-        //begining of button stuff
+        //begining of button stuff for navigation
         button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -50,13 +42,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        usefulLinks = findViewById(R.id.usefulLinks);
-        usefulLinks.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                openusefullinks();
-
-            }
-        });
 
         button2 = findViewById(R.id.button2);
         button2.setOnClickListener(new View.OnClickListener() {
@@ -65,10 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-    }
-    public void openusefullinks() {
-        Intent intent = new Intent(this, usefulWebsites.class);
-        startActivity(intent);
+        //end of buttons
     }
 
     public void openactivity2() {
@@ -81,20 +63,37 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    //Add a book to the database
-    public void addButtonClicked(View view) {
-        if (BookText.length() != 0) {
-        library book = new library(BookText.getText().toString());
-        dbhandler.addBook(book);
+    public void addButtonClicked(View v){
+        String newEntry = BookText.getText().toString();
+        if(BookText.length() != 0) {
+            AddData(newEntry);
 
-        } else {
-            Toast.makeText(MainActivity.this, "please enter a value", Toast.LENGTH_LONG).show();
+            BookText.setText("");
+            authorView.setText("");
+            categoryView.setText("");
+        }
+        else {
+            Toast.makeText(MainActivity.this, "Please enter text",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void AddData(String newEntry){
+        boolean insertData = myDB.addData(newEntry);
+        if(insertData==true){
+            Toast.makeText(MainActivity.this, "Its done boi",Toast.LENGTH_LONG).show();
+        }
+        else{
+            Toast.makeText(MainActivity.this, "error",Toast.LENGTH_LONG).show();
         }
 
     }
 
 
 }
+
+
+
+
 
 
 

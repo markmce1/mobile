@@ -2,12 +2,18 @@ package c16315146.mydit.ie.myandroidproject;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class listact extends AppCompatActivity {
 
@@ -16,34 +22,45 @@ public class listact extends AppCompatActivity {
     String[] bookNames;
     String[] bookAuthor;
     String[] bookCategory;
+    MyDBhandler myDB;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listact);
 
+        myDB = new MyDBhandler(this);
 
 
         myListView = findViewById(R.id.myListView);
 
 
-        //begining of list stuff
-        Resources res = getResources();
-        bookNames = res.getStringArray(R.array.bookNames);
-        bookAuthor = res.getStringArray(R.array.bookAuthor);
-        bookCategory = res.getStringArray(R.array.bookCategory);
+        //new lists stuff
+        ArrayList<String> theList = new ArrayList<>();
+        Cursor data = myDB.getListContents();
 
-        myListView =  findViewById(R.id.myListView);
+        if(data.getCount() == 0)
+        {
+                Toast.makeText(listact.this, "Its done boi",Toast.LENGTH_LONG).show();
+        }else{
+            while(data.moveToNext()){
+                theList.add(data.getString(1));//for book name
+                //theList.add(data.getString(2); //for author
+                ListAdapter listAdapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,theList);
+                myListView.setAdapter(listAdapter);
 
-        bookAdapter BookAdapter = new bookAdapter(this, bookNames, bookAuthor, bookCategory);
-        myListView.setAdapter(BookAdapter);
-        myListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            public void onItemClick(AdapterView<?> adapterView, View view,int i, long l){
-                Intent showlistDetailact = new Intent(getApplicationContext(), listdetails.class);
-                        showlistDetailact.putExtra("c16315146.mydit.ie.BOOK_INDEX", i );
-                startActivity(showlistDetailact);
+                myListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+                public void onItemClick(AdapterView<?> adapterView, View view,int i, long l){
+                    Intent showlistDetailact = new Intent(getApplicationContext(), listdetails.class);
+                    showlistDetailact.putExtra("c16315146.mydit.ie.BOOK_INDEX", i );
+                    startActivity(showlistDetailact);
+
             }
         });
+
+
+
 
 
 
@@ -51,4 +68,6 @@ public class listact extends AppCompatActivity {
 
 
     //end of list stuff*/
+}
+    }
 }
